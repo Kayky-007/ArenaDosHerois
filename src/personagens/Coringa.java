@@ -3,47 +3,31 @@ package personagens;
 import java.util.Random;
 
 public class Coringa extends Vilao {
-    public Coringa() {
-        super("Coringa", 65, 15, 6);
-    }
+    private Random rand = new Random();
+    public Coringa() { super("Coringa", 65, 15, 6); }
 
-    @Override
-    public void atacar(Personagem heroi) {
-        Random rand = new Random();
-        int dano = forca + rand.nextInt(8);
+    @Override public void atacar(Personagem heroi) {
+        int dano = calcularDano(heroi) + rand.nextInt(8);
         heroi.vida -= dano;
-        System.out.println("💣 " + nome + " jogou uma bomba de gás do riso causando " + dano + " de dano!");
+        System.out.println("💣 " + nome + " usou truque explosivo causando " + dano + " de dano!");
     }
-
-    @Override
-    public void defender() {
-        defendendo = true;
-        System.out.println("🎭 " + nome + " riu insanamente e confundiu o inimigo!");
+    @Override public void defender() { defendendo = true; System.out.println("🎭 " + nome + " confundiu o inimigo!"); }
+    @Override public void curar() { vida = Math.min(vidaMaxima, vida + 5); System.out.println("🃏 " + nome + " se recuperou (+5 HP)!"); }
+    @Override public void habilidadeEspecial(Personagem inimigo) {
+        System.out.println("🎲 " + nome + " causa CAOS: dobra seus danos e aplica ENVENENAMENTO!");
+        efeitos.add(Status.BUFF_FORCA);
+        inimigo.efeitos.add(Status.ENVENENAMENTO);
     }
-
-    @Override
-    public void curar() {
-        int cura = 5;
-        vida += cura;
-        System.out.println("🃏 " + nome + " se animou e recuperou " + cura + " de vida!");
-    }
-
     @Override
     public void agir(Personagem heroi) {
-        Random rand = new Random();
-        int acao = rand.nextInt(3);
-        switch (acao) {
-            case 0:
-                atacar(heroi);
-                break;
-            case 1: 
-                defender();
-                break;
-            case 2: 
-                curar();
-                break;
-            default:
-                System.out.println("Opção inválida!");
+        aplicarEfeitos();
+        int a = rand.nextInt(3);
+        switch (a) {
+            case 0: atacar(heroi); break;
+            case 1: defender(); break;
+            case 2: habilidadeEspecial(heroi); break;
+            default: atacar(heroi); break;
         }
+        energia = Math.max(0, energia - 2);
     }
 }

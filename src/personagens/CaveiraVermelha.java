@@ -3,47 +3,30 @@ package personagens;
 import java.util.Random;
 
 public class CaveiraVermelha extends Vilao {
-    public CaveiraVermelha() {
-        super("Caveira Vermelha", 75, 18, 7);
-    }
+    private Random rand = new Random();
+    public CaveiraVermelha() { super("Caveira Vermelha", 75, 18, 7); }
 
-    @Override
-    public void atacar(Personagem heroi) {
-        Random rand = new Random();
-        int dano = forca + rand.nextInt(6);
+    @Override public void atacar(Personagem heroi) {
+        int dano = calcularDano(heroi) + rand.nextInt(5);
         heroi.vida -= dano;
-        System.out.println("☠️ " + nome + " usou a arma Hydra causando " + dano + " de dano!");
+        System.out.println("☠️ " + nome + " atacou com tecnologia letal causando " + dano + " de dano!");
     }
-
-    @Override
-    public void defender() {
-        defendendo = true;
-        System.out.println("🧥 " + nome + " se protegeu atrás de tecnologia Hydra!");
-    }
-
-    @Override
-    public void curar() {
-        int cura = 7;
-        vida += cura;
-        System.out.println("🧬 " + nome + " usou soro experimental e curou " + cura + " de vida!");
-    }
-
+    @Override public void defender() { defendendo = true; System.out.println("🧥 " + nome + " ativou defesa tecnológica!"); }
+    @Override public void curar() { vida = Math.min(vidaMaxima, vida + 7); System.out.println("🧬 " + nome + " usou soro experimental (+7 HP)!"); }
+    @Override public void habilidadeEspecial(Personagem inimigo) { System.out.println("💣 " + nome + " dispara arma especial!"); inimigo.efeitos.add(Status.SANGRAMENTO); }
     @Override
     public void agir(Personagem heroi) {
-        Random rand = new Random();
-        int acao = rand.nextInt(3);
-        switch (acao) {
-            case 0:
-                atacar(heroi);
-                break;
-            case 1: 
-                defender();
-                break;
-            case 2: 
-                curar();
-                break;
-            default:
-                System.out.println("Opção inválida!");
+        aplicarEfeitos();
+        if (vida < 25) { curar(); }
+        else {
+            int a = rand.nextInt(3);
+            switch (a) {
+                case 0: atacar(heroi); break;
+                case 1: defender(); break;
+                case 2: habilidadeEspecial(heroi); break;
+                default: atacar(heroi); break;
+            }
         }
+        energia = Math.max(0, energia - 2);
     }
 }

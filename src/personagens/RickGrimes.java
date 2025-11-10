@@ -1,30 +1,24 @@
 package personagens;
 
-import java.util.Random;
-
 public class RickGrimes extends Heroi {
-    public RickGrimes() {
-        super("Rick Grimes", 70, 15, 7);
-    }
+    public RickGrimes() { super("Rick Grimes", 70, 15, 7); }
 
     @Override
     public void atacar(Personagem inimigo) {
-        Random rand = new Random();
-        int dano = forca + rand.nextInt(6);
+        int dano = calcularDano(inimigo);
         inimigo.vida -= dano;
-        System.out.println("🔫 " + nome + " atirou com seu revolver causando " + dano + " de dano!");
+        System.out.println("🔫 " + nome + " atirou e causou " + dano + " de dano!");
     }
 
-    @Override
-    public void defender() {
-        defendendo = true;
-        System.out.println("🧱 " + nome + " se escondeu atrás de uma barricada para se proteger!");
-    }
+    @Override public void defender() { defendendo = true; System.out.println("🧱 " + nome + " se protegeu atrás de barricada!"); }
+    @Override public void curar() { vida = Math.min(vidaMaxima, vida + 6); System.out.println("💊 " + nome + " usou kit médico (+6 HP)!"); }
 
     @Override
-    public void curar() {
-        int cura = 6;
-        vida += cura;
-        System.out.println("💊 " + nome + " usou um kit médico e recuperou " + cura + " de vida!");
+    public void habilidadeEspecial(Personagem inimigo) {
+        System.out.println("🛡️ Liderança: " + nome + " recupera energia e força por um turno!");
+        energia = Math.min(energiaMaxima, energia + 6);
+        efeitos.add(Status.BUFF_FORCA);
     }
+
+    @Override public void agir(Personagem inimigo) { /* IA opcional */ }
 }
