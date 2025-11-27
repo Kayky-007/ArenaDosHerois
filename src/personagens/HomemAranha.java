@@ -1,19 +1,49 @@
 package personagens;
 
-public class HomemAranha extends Heroi {
-    public HomemAranha() { super("Homem-Aranha", 80, 17, 8); }
+import java.util.Random;
 
-    @Override public void atacar(Personagem inimigo) {
-        int dano = calcularDano(inimigo);
+public class HomemAranha extends Heroi {
+    private Random rand = new Random();
+
+    public HomemAranha() {
+        super("Homem-Aranha", 80, 17, 8, 10);
+    }
+
+    @Override
+    public void atacar(Personagem inimigo) {
+        int dano = calcularDano(inimigo) + rand.nextInt(7);
         inimigo.vida -= dano;
         System.out.println("🕸️ " + nome + " lançou teias e causou " + dano + " de dano!");
     }
-    @Override public void defender() { defendendo = true; System.out.println("🤸 " + nome + " desviou agilmente!"); }
-    @Override public void curar() { vida = Math.min(vidaMaxima, vida + 7); System.out.println("🕷️ " + nome + " se recuperou (+7 HP)!"); }
-    @Override public void habilidadeEspecial(Personagem inimigo) {
-        System.out.println("🕸️ Ataque de combo do " + nome + "!");
-        int dano = calcularDano(inimigo) + 8;
-        inimigo.vida -= dano;
+
+    @Override
+    public void defender() {
+        defendendo = true;
+        System.out.println("🤸 " + nome + " desviou agilmente do próximo ataque!");
     }
-    @Override public void agir(Personagem inimigo) { /* IA opcional */ }
+
+    @Override
+    public void curar() {
+        if (energia >= 2) {
+            int cura = 7;
+            vida = Math.min(vidaMaxima, vida + cura);
+            energia -= 2;
+            System.out.println("🕷️ " + nome + " se recuperou (+7 HP)!");
+        } else {
+            System.out.println("⚡ Energia insuficiente para curar!");
+        }
+    }
+
+    @Override
+    public void habilidadeEspecial(Personagem inimigo) {
+        if (energia >= 5) {
+            int dano = calcularDano(inimigo) + 12;
+            inimigo.vida -= dano;
+            energia -= 5;
+            System.out.println("🕸️ " + nome + " usou combo especial causando " + dano + " de dano!");
+        } else {
+            System.out.println("⚡ Energia insuficiente! Atacando normalmente...");
+            atacar(inimigo);
+        }
+    }
 }

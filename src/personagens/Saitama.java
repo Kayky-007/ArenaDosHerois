@@ -6,12 +6,12 @@ public class Saitama extends Heroi {
     private Random rand = new Random();
 
     public Saitama() {
-        super("Saitama", 100, 22, 8); // vida média-alta, força forte, defesa boa
+        super("Saitama", 100, 20, 8, 10);
     }
 
     @Override
     public void atacar(Personagem inimigo) {
-        int dano = calcularDano(inimigo) + rand.nextInt(6); // 0 a 5 extra
+        int dano = calcularDano(inimigo) + rand.nextInt(6);
         inimigo.vida -= dano;
         System.out.println("👊 " + nome + " desferiu um soco causando " + dano + " de dano!");
     }
@@ -24,15 +24,20 @@ public class Saitama extends Heroi {
 
     @Override
     public void curar() {
-        int cura = 8 + rand.nextInt(6); // 8-13 HP
-        vida = Math.min(vidaMaxima, vida + cura);
-        System.out.println("🧘 " + nome + " se recuperou e ganhou " + cura + " de vida!");
+        if (energia >= 2) {
+            int cura = 8 + rand.nextInt(6);
+            vida = Math.min(vidaMaxima, vida + cura);
+            energia -= 2;
+            System.out.println("🧘 " + nome + " curou " + cura + " de vida!");
+        } else {
+            System.out.println("⚡ Energia insuficiente para curar!");
+        }
     }
 
     @Override
     public void habilidadeEspecial(Personagem inimigo) {
         if (energia >= 5) {
-            int dano = 30 + rand.nextInt(11); // 30-40 de dano
+            int dano = 30 + rand.nextInt(11);
             inimigo.vida -= dano;
             energia -= 5;
             System.out.println("💥 " + nome + " usou ataque especial causando " + dano + " de dano!");
@@ -40,10 +45,5 @@ public class Saitama extends Heroi {
             System.out.println("⚡ Energia insuficiente! Atacando normalmente...");
             atacar(inimigo);
         }
-    }
-
-    @Override
-    public void agir(Personagem inimigo) {
-        // herói controlado pelo jogador
     }
 }
